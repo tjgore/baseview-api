@@ -1,0 +1,59 @@
+<?php
+
+namespace App\Http\Controllers;
+
+use App\Http\Requests\SchoolRequest;
+use Illuminate\Http\Request;
+use App\Models\School;
+
+class SchoolController extends Controller
+{
+    public function all()
+    {
+        return response()->json(School::all());
+    }
+
+    public function find(School $school)
+    {
+        return response()->json($school);
+    }
+
+    public function create(SchoolRequest $request)
+    {   
+        $school = new School;
+
+        $this->setSchool($school, $request);
+
+        $school->save();
+
+        return $this->ok();
+    }
+
+    public function edit(School $school, SchoolRequest $request)
+    {
+        $this->setSchool($school, $request);
+
+        return $this->ok();
+    }
+
+    protected function setSchool(School $school, SchoolRequest $request)
+    {
+        $school->name = $request->name;
+        $school->address = $request->address;
+        $school->email = $request->email;
+        $school->phone = $request->phone;
+        $school->website = $request->website;
+        $school->principal = $request->principal;
+        $school->vice_principal = $request->vice_principal;
+        $school->about = $request->about;
+        $school->slogan = $request->slogan;
+
+        $school->save();
+    }
+
+    public function delete(School $school)
+    {
+        $school->delete();
+        $this->ok();
+    }
+}
