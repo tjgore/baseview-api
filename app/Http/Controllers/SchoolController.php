@@ -3,34 +3,40 @@
 namespace App\Http\Controllers;
 
 use App\Http\Requests\SchoolRequest;
-use Illuminate\Http\Request;
 use App\Models\School;
+use Illuminate\Support\Facades\Gate;
+
 
 class SchoolController extends Controller
 {
     public function all()
     {
-        return response()->json(School::all());
+        return response()->json(request()->user()->schools);
     }
 
     public function find(School $school)
     {
+        Gate::authorize('school', $school);
         return response()->json($school);
     }
 
     public function create(SchoolRequest $request)
     {   
+        Gate::authorize('create-school');
         $school = new School;
+        $user = $request->user();
 
-        $this->setSchool($school, $request);
+        $school = $this->setSchool($school, $request);
 
-        $school->save();
+        $school->users()->attach($user->id);
 
-        return $this->ok();
+        return $this->ok(201);
     }
 
     public function edit(School $school, SchoolRequest $request)
     {
+        Gate::authorize('school', $school);
+
         $this->setSchool($school, $request);
 
         return $this->ok();
@@ -49,6 +55,8 @@ class SchoolController extends Controller
         $school->slogan = $request->slogan;
 
         $school->save();
+
+        return $school;
     }
 
     public function delete(School $school)

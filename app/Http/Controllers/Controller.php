@@ -11,10 +11,10 @@ class Controller extends BaseController
 {
     use AuthorizesRequests, DispatchesJobs, ValidatesRequests;
 
-    public function ok()
+    public function ok($status = 200)
     {
         return response()->json([
             'message' => 'ok',
-        ]);
+        ], $status);
     }
 }

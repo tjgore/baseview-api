@@ -3,6 +3,8 @@
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\UserController;
 use App\Http\Controllers\SchoolController;
+use App\Http\Controllers\InviteController;
+
 
 /*
 |--------------------------------------------------------------------------
@@ -15,8 +17,11 @@ use App\Http\Controllers\SchoolController;
 |
 */
 
+Route::get('/roles', [RoleController::class, 'all']);
+
 Route::middleware(['auth:sanctum'])->group(function () {
     Route::get('/user', [UserController::class, 'find']);
+    
 
     Route::prefix('schools')->group(function () {
         Route::get('/', [SchoolController::class, 'all']);
@@ -25,6 +30,8 @@ Route::middleware(['auth:sanctum'])->group(function () {
         Route::delete('/{school}/delete', [SchoolController::class, 'delete']);
         Route::put('/{school}/edit', [SchoolController::class, 'edit']);
     });
+
+    Route::post('/invites', [InviteController::class, 'create']);
 
 });
 
