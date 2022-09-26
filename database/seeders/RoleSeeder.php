@@ -15,12 +15,14 @@ class RoleSeeder extends Seeder
      */
     public function run()
     {   
-        $roles = Role::ROLES;
-        array_walk($roles, function($roleName, $key) {
-            return Role::updateOrCreate(
-                ['name' => $key],
-                ['nice_name' => $roleName]
+        foreach(Role::ROLE_ID_NAMES as $id => $role) {
+            Role::updateOrCreate(
+                ['id' => $id],
+                [
+                    'name' => $role['name'],
+                    'nice_name' => $role['nice_name']
+                ]
             );
-        });
+        }
     }
 }

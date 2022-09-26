@@ -14,6 +14,10 @@ use Database\Seeders\RoleSeeder;
 
 class InviteTest extends TestCase
 {
+    use RefreshDatabase;
+
+    protected $seeder = RoleSeeder::class;
+
     /**
      * A basic feature test example.
      *
@@ -21,19 +25,13 @@ class InviteTest extends TestCase
      */
     public function test_user_belonging_to_school_can_create_invite()
     {
-        $this->seed(RoleSeeder::class);
         $user = User::factory()->create();
         $user->roles()->attach(Role::ADMIN);
 
-        // user create a school
-        $schoolInput = School::factory()->make();
-
-        $response = $this->actingAs($user)
-        ->postJson('/api/schools/create', $schoolInput->toArray());
-
-        $school = School::where('email', $schoolInput->email)->first();
-
-        $response->assertCreated();
+        // create a school that belongs to the user
+        $school = School::factory()->create();
+        $school->users()->attach($user->id);
+        
 
         // create invite
         $inviteInput = Invite::factory()->make([
@@ -41,14 +39,19 @@ class InviteTest extends TestCase
             'role_id' => Role::TEACHER
         ]);
         
-        $response = $this->actingAs($user)->postJson('/api/invites', $inviteInput->toArray());
+        $response = $this->actingAs($user)->postJson('/api/invites', $inviteInput->toArray());      
 
-        $response->assertStatus(201);
+        $this->assertDatabaseHas('invites', [
+            'school_id' => $school->id,
+            'email' => $inviteInput->email,
+            'created_by_id' => $user->id
+        ]);
+
+        $response->assertCreated();
     }
 
     public function test_user_not_at_school_can_not_create_invite()
     {
-        $this->seed(RoleSeeder::class);
         $user = User::factory()->create();
         $school = School::factory()->create();
         $user->roles()->attach(Role::ADMIN);
@@ -60,9 +63,11 @@ class InviteTest extends TestCase
         
         $response = $this->actingAs($user)->postJson('/api/invites', $inviteInput->toArray());
 
-        $hasInvite = Invite::where('school_id', $school->id)->exists();
-
-        $this->assertFalse($hasInvite);
+        $this->assertDatabaseMissing('invites', [
+            'school_id' => $school->id,
+            'email' => $inviteInput->email,
+            'created_by_id' => $user->id
+        ]);
 
         $response->assertStatus(403);
     }

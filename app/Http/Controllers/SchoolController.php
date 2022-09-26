@@ -23,6 +23,7 @@ class SchoolController extends Controller
     public function create(SchoolRequest $request)
     {   
         Gate::authorize('create-school');
+        
         $school = new School;
         $user = $request->user();
 

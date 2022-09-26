@@ -4,6 +4,7 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\UserController;
 use App\Http\Controllers\SchoolController;
 use App\Http\Controllers\InviteController;
+use App\Http\Controllers\RoleController;
 
 
 /*
@@ -17,11 +18,9 @@ use App\Http\Controllers\InviteController;
 |
 */
 
-Route::get('/roles', [RoleController::class, 'all']);
-
 Route::middleware(['auth:sanctum'])->group(function () {
     Route::get('/user', [UserController::class, 'find']);
-    
+    Route::get('/roles', [RoleController::class, 'all']);
 
     Route::prefix('schools')->group(function () {
         Route::get('/', [SchoolController::class, 'all']);

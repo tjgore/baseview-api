@@ -12,6 +12,8 @@ use Database\Seeders\RoleSeeder;
 
 class SchoolTest extends TestCase
 {
+    use RefreshDatabase;
+
     /**
      * Test a user can create a school
      *
@@ -28,9 +30,10 @@ class SchoolTest extends TestCase
         $response = $this->actingAs($user)
         ->postJson('/api/schools/create', $schoolInput->toArray());
 
-        $hasSchool = School::where('email', $schoolInput->email)->exists();
-
-        $this->assertTrue($hasSchool);
+        $this->assertDatabaseHas('schools', [
+            'name' => $schoolInput->name,
+            'email' => $schoolInput->email,
+        ]);
 
         $response->assertCreated()->assertJson([
             'message' => 'ok',
