@@ -35,6 +35,11 @@ class Role extends Model
 
     const SCHOOL_ROLES = [self::ADMIN, self::TEACHER, self::STUDENT];
 
+    protected $hidden = [
+        'created_at',
+        'updated_at'
+    ];
+
     public function users()
     {
         return $this->belongsToMany(User::class);

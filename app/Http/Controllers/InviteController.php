@@ -19,11 +19,11 @@ class InviteController extends Controller
             'first_name' => 'required|string',
             'last_name' => 'string|nullable',
             'email' => 'string|email|required',
-            'school_id' => 'required|integer|exists:schools,id',
-            'role_id' => [ 'required', 'integer', Rule::in(Role::SCHOOL_ROLES)],
+            'school' => 'required|integer|exists:schools,id',
+            'role' => [ 'required', 'integer', Rule::in(Role::SCHOOL_ROLES)],
         ]);
 
-        $school = School::find($request->school_id);
+        $school = School::find($request->school);
         Gate::authorize('school', $school);
 
         $invite = new Invite;
@@ -31,7 +31,7 @@ class InviteController extends Controller
         $invite->last_name = $request->last_name;
         $invite->email = $request->email;
         $invite->school_id = $school->id;
-        $invite->role_id = $request->role_id;
+        $invite->role_id = $request->role;
         $invite->token = Str::uuid();
         $invite->created_by_id = $request->user()->id;
         $invite->expires_at = now()->addDay();

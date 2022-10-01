@@ -20,8 +20,8 @@ class InviteFactory extends Factory
             'first_name' => fake()->name(),
             'last_name' => fake()->name(),
             'email' => fake()->unique()->safeEmail(),
-            'school_id' => 1,
-            'role_id' => 2
+            'school' => 1,
+            'role' => 2
         ];
     }
 }

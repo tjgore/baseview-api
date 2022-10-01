@@ -5,6 +5,7 @@ use App\Http\Controllers\UserController;
 use App\Http\Controllers\SchoolController;
 use App\Http\Controllers\InviteController;
 use App\Http\Controllers\RoleController;
+use App\Http\Controllers\ProfileController;
 
 
 /*
@@ -27,10 +28,15 @@ Route::middleware(['auth:sanctum'])->group(function () {
         Route::get('/{school}', [SchoolController::class, 'find']);
         Route::post('/create', [SchoolController::class, 'create']);
         Route::delete('/{school}/delete', [SchoolController::class, 'delete']);
-        Route::put('/{school}/edit', [SchoolController::class, 'edit']);
+        Route::put('/{school}/edit', [SchoolController::class, 'update']);
     });
 
     Route::post('/invites', [InviteController::class, 'create']);
+
+    Route::prefix('profiles')->group(function () {
+        Route::get('/', [ProfileController::class, 'get']);
+        Route::put('/{profile}/update', [ProfileController::class, 'update']);
+    });
 
 });
 

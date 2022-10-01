@@ -34,7 +34,7 @@ class SchoolController extends Controller
         return $this->ok(201);
     }
 
-    public function edit(School $school, SchoolRequest $request)
+    public function update(School $school, SchoolRequest $request)
     {
         Gate::authorize('school', $school);
 

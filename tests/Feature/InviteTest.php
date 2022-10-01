@@ -35,8 +35,8 @@ class InviteTest extends TestCase
 
         // create invite
         $inviteInput = Invite::factory()->make([
-            'school_id' => $school->id,
-            'role_id' => Role::TEACHER
+            'school' => $school->id,
+            'role' => Role::TEACHER
         ]);
         
         $response = $this->actingAs($user)->postJson('/api/invites', $inviteInput->toArray());      
@@ -57,8 +57,8 @@ class InviteTest extends TestCase
         $user->roles()->attach(Role::ADMIN);
 
         $inviteInput = Invite::factory()->make([
-            'school_id' => $school->id,
-            'role_id' => Role::TEACHER
+            'school' => $school->id,
+            'role' => Role::TEACHER
         ]);
         
         $response = $this->actingAs($user)->postJson('/api/invites', $inviteInput->toArray());
