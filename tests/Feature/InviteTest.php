@@ -10,6 +10,8 @@ use App\Models\School;
 use App\Models\Invite;
 use App\Models\Role;
 use Database\Seeders\RoleSeeder;
+use Illuminate\Support\Facades\Mail;
+use App\Mail\UserInvited;
 
 
 class InviteTest extends TestCase
@@ -25,6 +27,8 @@ class InviteTest extends TestCase
      */
     public function test_user_belonging_to_school_can_create_invite()
     {
+        Mail::fake();
+
         $user = User::factory()->create();
         $user->roles()->attach(Role::ADMIN);
 
@@ -46,6 +50,8 @@ class InviteTest extends TestCase
             'email' => $inviteInput->email,
             'created_by_id' => $user->id
         ]);
+
+        Mail::assertSent(UserInvited::class);
 
         $response->assertCreated();
     }
@@ -70,5 +76,23 @@ class InviteTest extends TestCase
         ]);
 
         $response->assertStatus(403);
+    }
+
+    public function test_can_get_valid_invite_by_token()
+    {
+        $user = User::factory()->create();
+        $school = School::factory()->create();
+        $user->roles()->attach(Role::ADMIN);
+
+        $invite = Invite::factory()->create([
+            'school_id' => $school->id,
+            'role_id' => Role::TEACHER,
+            'created_by_id' => $user->id,
+        ]);
+
+        $response = $this->actingAs($user)->getJson("/api/invites/{$invite->token}");
+
+        $response->assertJson($invite->toArray());
+        $response->assertStatus(200);
     }
 }

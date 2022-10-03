@@ -9,7 +9,8 @@ use Illuminate\Validation\Rule;
 use App\Models\Role;
 use App\Models\School;
 use Illuminate\Support\Facades\Gate;
-
+use Illuminate\Support\Facades\Mail;
+use App\Mail\UserInvited;
 
 class InviteController extends Controller
 {
@@ -37,6 +38,18 @@ class InviteController extends Controller
         $invite->expires_at = now()->addDay();
         $invite->save();
 
+        Mail::to($invite->email)->send(new UserInvited($invite));
+
         return $this->ok(201);
+    }
+
+    public function findByToken(string $token)
+    {
+        $invite = Invite::where('token', $token)
+            ->where('accepted', false)
+            ->where('expires_at', '>', now())
+            ->first();
+
+        return response()->json($invite);
     }
 }

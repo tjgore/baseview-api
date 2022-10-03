@@ -32,10 +32,12 @@ Route::middleware(['auth:sanctum'])->group(function () {
     });
 
     Route::post('/invites', [InviteController::class, 'create']);
+    Route::get('/invites/{token}', [InviteController::class, 'findByToken']);
+
 
     Route::prefix('profiles')->group(function () {
         Route::get('/', [ProfileController::class, 'get']);
-        Route::put('/{profile}/update', [ProfileController::class, 'update']);
+        Route::put('/', [ProfileController::class, 'update']);
     });
 
 });

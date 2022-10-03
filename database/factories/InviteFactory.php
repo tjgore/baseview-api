@@ -3,6 +3,7 @@
 namespace Database\Factories;
 
 use Illuminate\Database\Eloquent\Factories\Factory;
+use Illuminate\Support\Str;
 
 /**
  * @extends \Illuminate\Database\Eloquent\Factories\Factory<\App\Models\Model>
@@ -17,11 +18,14 @@ class InviteFactory extends Factory
     public function definition()
     {
         return [
-            'first_name' => fake()->name(),
-            'last_name' => fake()->name(),
+            'first_name' => fake()->firstName(),
+            'last_name' => fake()->lastName(),
             'email' => fake()->unique()->safeEmail(),
-            'school' => 1,
-            'role' => 2
+            'school_id' => 1,
+            'role_id' => 2,
+            'created_by_id' => 1, // user_id
+            'token' => Str::uuid(),
+            'expires_at' =>  now()->addDay()
         ];
     }
 }
