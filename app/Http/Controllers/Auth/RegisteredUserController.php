@@ -8,6 +8,8 @@ use Illuminate\Auth\Events\Registered;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
+use App\Models\Invite;
+
 
 class RegisteredUserController extends Controller
 {
@@ -26,7 +28,8 @@ class RegisteredUserController extends Controller
             'last_name' => ['required', 'string', 'max:191'],
             'email' => ['required', 'string', 'email', 'max:191', 'unique:users'],
             'password' => 'required|alpha_num|min:8|confirmed',
-            // 'password' => ['required', 'confirmed', Rules\Password::defaults()],   
+            // 'password' => ['required', 'confirmed', Rules\Password::defaults()],
+            'invite_id' => 'nullable|integer|exists:invites,id',
         ]);
 
         $user = User::create([
@@ -36,10 +39,30 @@ class RegisteredUserController extends Controller
             'password' => Hash::make($request->password),
         ]);
 
+        $this->addUserToSchool($request->invite_id, $user);
+
         event(new Registered($user));
 
         Auth::login($user);
 
         return response()->noContent();
+    }
+
+    /**
+     * Add User to a school
+     *
+     * @param integer $inviteId
+     * @param User $user
+     * @return void
+     */
+    private function addUserToSchool(int $inviteId, User $user)
+    {
+        if (!$inviteId) {
+            return;  
+        }
+
+        $invite = Invite::where('id', $inviteId)->where('accepted', false)->first();
+        $user->roles()->attach($invite->role_id);
+        $user->schools()->attach($invite->school_id);
     }
 }

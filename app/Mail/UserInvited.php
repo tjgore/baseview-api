@@ -37,8 +37,10 @@ class UserInvited extends Mailable implements ShouldQueue
             $this->invite->token
         );
                 
-        return $this->view('emails.user-invited')->with([
-            'inviteLink' => $inviteLink, 
-        ]);
+        return $this
+            ->subject("{$this->invite->school->name} Invite")
+            ->view('emails.user-invited')->with([
+                'inviteLink' => $inviteLink, 
+            ]);
     }
 }

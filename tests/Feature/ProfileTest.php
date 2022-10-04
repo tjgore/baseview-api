@@ -6,7 +6,6 @@ use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Foundation\Testing\WithFaker;
 use Tests\TestCase;
 use App\Models\User;
-use App\Models\Profile;
 use App\Models\Role;
 use Database\Seeders\RoleSeeder;
 
@@ -26,9 +25,7 @@ class ProfileTest extends TestCase
     {
         $user = User::factory()->create();
         $user->roles()->attach(Role::ADMIN);
-        $profile = Profile::factory()->create([
-            'user_id' => $user->id
-        ]);
+        $profile = $user->profile;
 
         $response = $this->actingAs($user)->getJson('/api/profiles');
 
@@ -41,9 +38,6 @@ class ProfileTest extends TestCase
     {
         $user = User::factory()->create();
         $user->roles()->attach(Role::ADMIN);
-        $profile = Profile::factory()->create([
-            'user_id' => $user->id
-        ]);
 
         $data = [
             'first_name' => 'Henry',

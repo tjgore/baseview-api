@@ -33,6 +33,13 @@ class Role extends Model
         ]
     ];
 
+    const ALL = [
+        self::INTERNAL_ADMIN, 
+        self::ADMIN,
+        self::TEACHER,
+        self::STUDENT
+    ];
+
     const SCHOOL_ROLES = [self::ADMIN, self::TEACHER, self::STUDENT];
 
     protected $hidden = [

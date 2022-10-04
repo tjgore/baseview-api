@@ -14,6 +14,8 @@ class SchoolTest extends TestCase
 {
     use RefreshDatabase;
 
+    protected $seeder = RoleSeeder::class;
+
     /**
      * Test a user can create a school
      *
@@ -21,7 +23,6 @@ class SchoolTest extends TestCase
      */
     public function test_admin_user_can_create_school()
     {
-        $this->seed(RoleSeeder::class);
         $user = User::factory()->create();
         $user->roles()->attach(Role::ADMIN);
 

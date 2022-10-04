@@ -7,11 +7,12 @@ use Illuminate\Foundation\Testing\WithFaker;
 use Tests\TestCase;
 use App\Models\User;
 use App\Models\Role;
-use Illuminate\Testing\Fluent\AssertableJson;
 
 class RoleTest extends TestCase
 {
     use RefreshDatabase;
+
+    protected $seeder = RoleSeeder::class;
     /**
      * A basic feature test example.
      *

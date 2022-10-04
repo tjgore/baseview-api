@@ -19,6 +19,8 @@ use App\Http\Controllers\ProfileController;
 |
 */
 
+Route::get('/invites/{token}', [InviteController::class, 'findByToken']);
+
 Route::middleware(['auth:sanctum'])->group(function () {
     Route::get('/user', [UserController::class, 'find']);
     Route::get('/roles', [RoleController::class, 'all']);
@@ -32,11 +34,10 @@ Route::middleware(['auth:sanctum'])->group(function () {
     });
 
     Route::post('/invites', [InviteController::class, 'create']);
-    Route::get('/invites/{token}', [InviteController::class, 'findByToken']);
-
 
     Route::prefix('profiles')->group(function () {
         Route::get('/', [ProfileController::class, 'get']);
+        Route::post('/', [ProfileController::class, 'create']);
         Route::put('/', [ProfileController::class, 'update']);
     });
 

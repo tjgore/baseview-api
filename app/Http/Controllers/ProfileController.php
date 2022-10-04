@@ -6,6 +6,7 @@ use Illuminate\Http\Request;
 use Illuminate\Validation\Rule;
 use App\Services\ProfileService;
 use App\Models\Profile;
+use App\Models\User;
 use Illuminate\Http\JsonResponse;
 
 class ProfileController extends Controller
@@ -17,9 +18,7 @@ class ProfileController extends Controller
      */
     public function get(): JsonResponse
     {
-        $userProfile = request()->user()
-            ->with(['profile', 'roles'])
-            ->first();
+        $userProfile = User::with(['profile', 'roles'])->where('id', request()->user()->id)->first();
 
         return response()->json($userProfile);    
     }

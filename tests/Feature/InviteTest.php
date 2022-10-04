@@ -51,7 +51,7 @@ class InviteTest extends TestCase
             'created_by_id' => $user->id
         ]);
 
-        Mail::assertSent(UserInvited::class);
+        Mail::assertQueued(UserInvited::class);
 
         $response->assertCreated();
     }
@@ -80,19 +80,12 @@ class InviteTest extends TestCase
 
     public function test_can_get_valid_invite_by_token()
     {
-        $user = User::factory()->create();
-        $school = School::factory()->create();
-        $user->roles()->attach(Role::ADMIN);
-
-        $invite = Invite::factory()->create([
-            'school_id' => $school->id,
-            'role_id' => Role::TEACHER,
-            'created_by_id' => $user->id,
-        ]);
-
-        $response = $this->actingAs($user)->getJson("/api/invites/{$invite->token}");
+        $invite = Invite::factory()->create();
+        
+        $response = $this->getJson("/api/invites/{$invite->token}");
 
         $response->assertJson($invite->toArray());
         $response->assertStatus(200);
     }
+
 }
