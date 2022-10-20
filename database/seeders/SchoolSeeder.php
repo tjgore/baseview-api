@@ -31,6 +31,7 @@ class SchoolSeeder extends Seeder
 
                 $userIds = $users->pluck('id')->toArray();
                 $school->users()->attach($userIds);
+                
             });
     }
 

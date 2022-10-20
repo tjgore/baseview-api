@@ -27,7 +27,8 @@ class InviteFactory extends Factory
             'role_id' => fake()->numberBetween(2, 4),
             'created_by_id' => User::factory(),
             'token' => Str::uuid(),
-            'expires_at' =>  now()->addDay()
+            'expires_at' =>  now()->addDay(),
+            'accepted' => false,
         ];
     }
 }

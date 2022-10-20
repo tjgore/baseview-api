@@ -31,7 +31,7 @@ class ProfileController extends Controller
      */
     public function create(Request $request): JsonResponse
     {
-        $validated = $request->validated([
+        $validated = $request->validate([
             'preferred_name' => 'string|required',
             'gender' => ['required', 'string', Rule::in(['Male', 'Female', 'Neither'])],
             'dob' => 'required|date_format:Y-m-d',
@@ -79,6 +79,11 @@ class ProfileController extends Controller
         $user->save();
 
         $profile = $user->profile;
+
+        if (!$profile) {
+            $profile = new Profile;
+            $profile->user_id = $user->id;
+        }
 
         $profile->general = app(ProfileService::class)->setGeneral($validated);
 

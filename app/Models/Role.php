@@ -14,24 +14,10 @@ class Role extends Model
     const TEACHER = 3;
     const STUDENT = 4;
 
-    const ROLE_ID_NAMES = [
-        self::INTERNAL_ADMIN => [
-            'name' => 'superAdmin',
-            'nice_name' => 'Internal Admin'
-        ],
-        self::ADMIN => [
-            'name' => 'admin',
-            'nice_name' => 'Admin'
-        ],
-        self::TEACHER => [
-            'name' => 'teacher',
-            'nice_name' => 'Teacher'
-        ],
-        self::STUDENT => [
-            'name' => 'student',
-            'nice_name' => 'Student'
-        ]
-    ];
+    const INTERNAL_ADMIN_NAME = 'superAdmin';
+    const ADMIN_NAME = 'admin';
+    const TEACHER_NAME = 'teacher';
+    const STUDENT_NAME = 'student';
 
     const ALL = [
         self::INTERNAL_ADMIN, 

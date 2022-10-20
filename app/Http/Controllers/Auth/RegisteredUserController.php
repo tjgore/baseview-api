@@ -64,5 +64,8 @@ class RegisteredUserController extends Controller
         $invite = Invite::where('id', $inviteId)->where('accepted', false)->first();
         $user->roles()->attach($invite->role_id);
         $user->schools()->attach($invite->school_id);
+
+        $invite->accepted = true;
+        $invite->save();
     }
 }

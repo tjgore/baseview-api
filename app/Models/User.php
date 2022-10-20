@@ -58,4 +58,14 @@ class User extends Authenticatable
         return $this->hasOne(Profile::class);
     }
 
+    public function hasRoles(array $roles)
+    {
+        return $this->roles()->whereIn('id', $roles)->exists();
+    }
+
+    public function isInternalAdmin()
+    {
+        return $this->hasRoles([Role::INTERNAL_ADMIN]);
+    }
+
 }

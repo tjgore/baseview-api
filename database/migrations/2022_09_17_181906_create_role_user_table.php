@@ -17,9 +17,9 @@ return new class extends Migration
     {
         Schema::create('role_user', function (Blueprint $table) {
             $table->foreignIdFor(User::class);
-            $table->foreign('user_id')->references('id')->on('users');
+            $table->foreign('user_id')->references('id')->on('users')->constrained()->onDelete('cascade');
             $table->foreignIdFor(Role::class);
-            $table->foreign('role_id')->references('id')->on('roles');
+            $table->foreign('role_id')->references('id')->on('roles')->constrained()->onDelete('cascade');
         });
     }
 

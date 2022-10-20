@@ -18,11 +18,11 @@ return new class extends Migration
         Schema::create('invites', function (Blueprint $table) {
             $table->id();
             $table->foreignIdFor(School::class);
-            $table->foreign('school_id')->references('id')->on('schools');
+            $table->foreign('school_id')->references('id')->on('schools')->constrained()->onDelete('cascade');
             $table->foreignIdFor(Role::class);
-            $table->foreign('role_id')->references('id')->on('roles');
+            $table->foreign('role_id')->references('id')->on('roles')->constrained()->onDelete('cascade');
             $table->foreignId('created_by_id');
-            $table->foreign('created_by_id')->references('id')->on('users');
+            $table->foreign('created_by_id')->references('id')->on('users')->constrained()->onDelete('cascade');
             $table->string('first_name');
             $table->string('last_name')->nullable();
             $table->string('email');

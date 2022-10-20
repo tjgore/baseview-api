@@ -10,6 +10,7 @@ use App\Models\School;
 use App\Models\Role;
 use Database\Seeders\RoleSeeder;
 
+
 class SchoolTest extends TestCase
 {
     use RefreshDatabase;
@@ -24,7 +25,7 @@ class SchoolTest extends TestCase
     public function test_admin_user_can_create_school()
     {
         $user = User::factory()->create();
-        $user->roles()->attach(Role::ADMIN);
+        $user->roles()->attach(Role::INTERNAL_ADMIN);
 
         $schoolInput = School::factory()->make();
 
@@ -39,5 +40,20 @@ class SchoolTest extends TestCase
         $response->assertCreated()->assertJson([
             'message' => 'ok',
         ]);
+    }
+
+    public function test_admin_user_can_view_their_school()
+    {
+        $user = User::factory()->create();
+        $user->roles()->attach(Role::ADMIN);
+
+        $school = School::factory()->create();
+        $school->users()->attach($user->id);
+        
+        $response = $this->actingAs($user)->getJson("/api/schools/{$school->id}");
+
+        $response->assertJson($school->toArray());
+        $response->assertStatus(200);
+
     }
 }

@@ -25,7 +25,7 @@ class InviteController extends Controller
         ]);
 
         $school = School::find($request->school);
-        Gate::authorize('school', $school);
+        Gate::authorize('invite', $school);
 
         $invite = new Invite;
         $invite->first_name =  $request->first_name;

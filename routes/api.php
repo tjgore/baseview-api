@@ -6,7 +6,8 @@ use App\Http\Controllers\SchoolController;
 use App\Http\Controllers\InviteController;
 use App\Http\Controllers\RoleController;
 use App\Http\Controllers\ProfileController;
-
+use App\Http\Controllers\AccountController;
+use App\Models\Role;
 
 /*
 |--------------------------------------------------------------------------
@@ -27,13 +28,19 @@ Route::middleware(['auth:sanctum'])->group(function () {
 
     Route::prefix('schools')->group(function () {
         Route::get('/', [SchoolController::class, 'all']);
-        Route::get('/{school}', [SchoolController::class, 'find']);
-        Route::post('/create', [SchoolController::class, 'create']);
-        Route::delete('/{school}/delete', [SchoolController::class, 'delete']);
-        Route::put('/{school}/edit', [SchoolController::class, 'update']);
+        Route::post('/create', [SchoolController::class, 'create'])->middleware('role:' . Role::ADMIN);
+
+        Route::group(['prefix' => '{school}', 'middleware' => 'attends.school'], function () {
+            Route::get('/', [SchoolController::class, 'find'])->middleware('role:' . implode(',', Role::SCHOOL_ROLES));
+            Route::delete('/delete', [SchoolController::class, 'delete'])->middleware('role:' . Role::ADMIN);
+            Route::put('/edit', [SchoolController::class, 'update'])->middleware('role:' . Role::ADMIN);
+
+            Route::get('/accounts', [AccountController::class, 'getAll']);
+        });
     });
 
-    Route::post('/invites', [InviteController::class, 'create']);
+    // @TODO change this to /schools/{schoolId}/invites
+    Route::post('/invites', [InviteController::class, 'create'])->middleware('role:' . sprintf('%s,%s', Role::ADMIN, Role::TEACHER));
 
     Route::prefix('profiles')->group(function () {
         Route::get('/', [ProfileController::class, 'get']);

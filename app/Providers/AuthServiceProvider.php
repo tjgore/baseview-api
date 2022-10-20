@@ -19,6 +19,7 @@ class AuthServiceProvider extends ServiceProvider
      */
     protected $policies = [
         // 'App\Models\Model' => 'App\Policies\ModelPolicy',
+
     ];
 
     /**
@@ -35,12 +36,8 @@ class AuthServiceProvider extends ServiceProvider
         });
 
 
-        Gate::define('school', function (User $user, School $school) {
+        /* Gate::define('school', function (User $user, School $school) {
             return $user->schools()->where('school_id', $school->id)->exists();
-        });
-
-        Gate::define('create-school', function (User $user) {
-            return $user->roles()->whereIn('id', [Role::ADMIN, Role::INTERNAL_ADMIN])->exists();
-        });
+        }); */
     }
 }
