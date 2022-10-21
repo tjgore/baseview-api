@@ -72,20 +72,13 @@ class ProfilePolicy
      */
     public function viewAll(User $user)
     {
-        $canFilter = false;
-
         $roles = $user->roles()->get();
 
-        $roles->each(function ($role) use ($canFilter) {
+        return $roles->filter(function ($role) {
             $filters = collect(self::FILTERS[$role->id]);
-
-            if ($canFilter = $this->canUse($filters)) {
-                return false;
-            }
-            
-        });
-
-        return $canFilter;
+            return $this->canUse($filters);
+        })
+        ->isNotEmpty();
     }
 
     /**
@@ -96,18 +89,12 @@ class ProfilePolicy
      */
     protected function canUse(Collection $roleFilters) : bool
     {
-        $validFilter = false;
-
-        $roleFilters->each(function ($filter) use ($validFilter) {
+        return $roleFilters->filter(function ($filter) {
             $hasValidRole = $filter['role'] === request()->query('role');
             $hasValidLimit = in_array(request()->query('limit'), $filter['limit']);
 
-            if ($hasValidRole && $hasValidLimit) {
-                $validFilter = true;
-                return false;
-            }
-        });
-
-        return $validFilter;
+            return $hasValidRole && $hasValidLimit;
+        })
+        ->isNotEmpty();
     }
 }

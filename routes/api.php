@@ -7,6 +7,7 @@ use App\Http\Controllers\InviteController;
 use App\Http\Controllers\RoleController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\AccountController;
+use App\Http\Controllers\OverviewController;
 use App\Models\Role;
 
 /*
@@ -35,7 +36,9 @@ Route::middleware(['auth:sanctum'])->group(function () {
             Route::delete('/delete', [SchoolController::class, 'delete'])->middleware('role:' . Role::ADMIN);
             Route::put('/edit', [SchoolController::class, 'update'])->middleware('role:' . Role::ADMIN);
 
-            Route::get('/accounts', [AccountController::class, 'getAll']);
+            Route::get('/accounts', [AccountController::class, 'getAll'])->middleware('role:' . implode(',', Role::SCHOOL_ROLES));
+
+            Route::get('/overview/count', [OverviewController::class, 'getCount'])->middleware('role:' . sprintf('%s,%s', Role::ADMIN, Role::TEACHER));
         });
     });
 

@@ -3,12 +3,9 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\DB;
 use App\Models\Profile;
 use Illuminate\Support\Facades\Gate;
 use App\Models\School;
-use App\Models\Role;
-use App\Models\User;
 use Illuminate\Validation\Rule;
 
 
@@ -25,8 +22,7 @@ class AccountController extends Controller
 
         Gate::authorize('viewAll', Profile::class);
 
-        $accounts = DB::table('users')
-            ->join('school_user', 'users.id', 'school_user.user_id')
+        $accounts = $school->users()
             ->join('role_user', 'users.id', 'role_user.user_id')
             ->join('roles', 'role_user.role_id', 'roles.id')
             ->join('profiles', 'users.id', 'profiles.user_id')
@@ -38,12 +34,12 @@ class AccountController extends Controller
                         ->orWhere('users.email', 'like', "%$search%");
                 });
             })
-            ->get([
+            ->select([
                 'users.first_name',
                 'users.last_name',
                 'users.email',
                 'roles.nice_name as role'
-            ]);
+            ])->paginate(self::TOTAL_RESULTS);
 
         return response()->json($accounts);
     }

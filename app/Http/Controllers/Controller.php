@@ -11,6 +11,8 @@ class Controller extends BaseController
 {
     use AuthorizesRequests, DispatchesJobs, ValidatesRequests;
 
+    const TOTAL_RESULTS = 100;
+
     public function ok($status = 200)
     {
         return response()->json([

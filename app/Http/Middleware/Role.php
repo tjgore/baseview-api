@@ -15,13 +15,12 @@ class Role
      * @param  \Closure(\Illuminate\Http\Request): (\Illuminate\Http\Response|\Illuminate\Http\RedirectResponse)  $next
      * @return \Illuminate\Http\Response|\Illuminate\Http\RedirectResponse
      */
-    public function handle(Request $request, Closure $next, string $roles)
+    public function handle(Request $request, Closure $next, string ...$roles)
     {
         // Internal admin has full access.
-        $roles = sprintf('%s,%s', $roles, RoleModel::INTERNAL_ADMIN);
-        $roleIds = explode(',', $roles);
+        array_push($roles, RoleModel::INTERNAL_ADMIN);
 
-        $hasValidRole = $request->user()->roles()->whereIn('id', $roleIds)->exists();
+        $hasValidRole = $request->user()->roles()->whereIn('id', $roles)->exists();
 
         abort_if(!$hasValidRole, 403, 'Invalid user role');
 
