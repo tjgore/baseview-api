@@ -37,7 +37,7 @@ class AccountTest extends TestCase
 
         $response = $this->actingAs($user)->getJson("/api/schools/{$school->id}/accounts?role=student&limit=all");
 
-        $response->assertJsonFragment(['nice_name' => 'Student']);
+        $response->assertJsonFragment(['role' => 'Student']);
 
         $response->assertStatus(200);
     }

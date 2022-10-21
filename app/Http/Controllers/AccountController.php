@@ -33,14 +33,16 @@ class AccountController extends Controller
             ->where('school_user.school_id', $school->id)
             ->where('roles.name', $request->role)
             ->when($search, function ($query, $search) {
-                $query->where('users.first_name', 'like', "%$search%")
-                ->orWhere('users.email', 'like', "%$search%");
+                $query->where(function ($query) use ($search) {
+                    $query->where('users.first_name', 'like', "%$search%")
+                        ->orWhere('users.email', 'like', "%$search%");
+                });
             })
             ->get([
                 'users.first_name',
                 'users.last_name',
                 'users.email',
-                'roles.nice_name'
+                'roles.nice_name as role'
             ]);
 
         return response()->json($accounts);
