@@ -16,11 +16,14 @@ class OverviewController extends Controller
         ->join('school_user', 'school_user.school_id', 'schools.id')
         ->join('role_user', 'school_user.user_id', 'role_user.user_id')
         ->join('roles', 'roles.id', 'role_user.role_id')
-        ->selectRaw('roles.nice_name, COUNT(school_user.user_id) as count')
-        ->groupBy('roles.nice_name')
+        ->selectRaw('roles.nice_name, roles.id, COUNT(school_user.user_id) as count')
+        ->groupBy(['roles.nice_name', 'roles.id'])
         ->get();
-
-        return response()->json($accountsTotal); 
+        
+        return response()->json([
+            Role::TEACHER_NAME => $accountsTotal->firstWhere('id', Role::TEACHER)->count,
+            Role::STUDENT_NAME => $accountsTotal->firstWhere('id', Role::STUDENT)->count,
+        ]); 
         
     }
 }

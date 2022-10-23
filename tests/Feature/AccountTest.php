@@ -33,7 +33,7 @@ class AccountTest extends TestCase
 
         $user->schools()->attach($school->id);
         
-        $user->roles()->attach(Role::INTERNAL_ADMIN);
+        $user->roles()->attach(Role::TEACHER);
 
         $response = $this->actingAs($user)->getJson("/api/schools/{$school->id}/accounts?role=student&limit=all");
 

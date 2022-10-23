@@ -27,6 +27,8 @@ class InviteTest extends TestCase
      */
     public function test_user_belonging_to_school_can_create_invite()
     {
+        $this->artisan('config:clear');
+
         Mail::fake();
 
         $user = User::factory()->create();
@@ -44,7 +46,7 @@ class InviteTest extends TestCase
         $inviteInput->school = $school->id;
         $inviteInput->role = Role::TEACHER;
 
-        $response = $this->actingAs($user)->postJson('/api/invites', $inviteInput->toArray());      
+        $response = $this->actingAs($user)->postJson("/api/schools/{$school->id}/invites", $inviteInput->toArray());      
 
         $this->assertDatabaseHas('invites', [
             'school_id' => $school->id,
@@ -70,7 +72,7 @@ class InviteTest extends TestCase
         $inviteInput->role = Role::TEACHER;
 
         
-        $response = $this->actingAs($user)->postJson('/api/invites', $inviteInput->toArray());
+        $response = $this->actingAs($user)->postJson("/api/schools/{$school->id}/invites", $inviteInput->toArray());
 
         $this->assertDatabaseMissing('invites', [
             'school_id' => $school->id,

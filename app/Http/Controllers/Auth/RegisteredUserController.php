@@ -39,7 +39,11 @@ class RegisteredUserController extends Controller
             'password' => Hash::make($request->password),
         ]);
 
+        // A profile is always created with the user even if it is empty. Maybe an event createProfile 
+        // @TODO this could be an event, rename to handleInvitation
         $this->addUserToSchool($request->invite_id, $user);
+
+        // @TODO add an event to add the profile if an invite_id is provided
 
         event(new Registered($user));
 

@@ -3,7 +3,6 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Log;
 
 
 class UserController extends Controller
@@ -14,7 +13,13 @@ class UserController extends Controller
         
         return response()->json([
             'user' => $user,
-            'roles' => $user->roles
+            'roles' => $user->roles,
+            'rolesArray' => [
+                'ids' => $user->roles()->pluck('id'),
+                'names' => $user->roles()->pluck('name'),
+                'nice_names' => $user->roles()->pluck('nice_name'),
+            ],
+            'schools' => $user->schools,
         ]);
     }
 }

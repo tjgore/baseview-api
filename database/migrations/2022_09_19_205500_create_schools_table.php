@@ -25,6 +25,7 @@ return new class extends Migration
             $table->text('slogan')->nullable();
             $table->text('about')->nullable();
             $table->timestamps();
+            $table->softDeletes();
         });
     }
 

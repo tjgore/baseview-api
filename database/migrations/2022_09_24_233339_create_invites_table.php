@@ -27,6 +27,7 @@ return new class extends Migration
             $table->string('last_name')->nullable();
             $table->string('email');
             $table->string('token')->unique();
+            $table->boolean('accepted')->default(false);
             $table->timestamp('expires_at', 0);
             $table->timestamps();
         });

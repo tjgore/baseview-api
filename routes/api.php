@@ -37,16 +37,20 @@ Route::middleware(['auth:sanctum'])->group(function () {
             Route::put('/edit', [SchoolController::class, 'update'])->middleware('role:' . Role::ADMIN);
 
             Route::get('/accounts', [AccountController::class, 'getAll'])->middleware('role:' . implode(',', Role::SCHOOL_ROLES));
+            Route::post('/accounts', [AccountController::class, 'create'])->middleware('role:' . sprintf('%s,%s', Role::ADMIN, Role::TEACHER));
+            Route::get('/accounts/{user}', [AccountController::class, 'find'])->middleware('can:view,user');
+            Route::put('/profiles/{profile}', [ProfileController::class, 'updateUserProfile'])->middleware('can:update,profile,school');;
+
+            Route::get('/accounts/{user}/role', [RoleController::class, 'find'])->middleware('role:' . sprintf('%s,%s', Role::ADMIN, Role::TEACHER));
 
             Route::get('/overview/count', [OverviewController::class, 'getCount'])->middleware('role:' . sprintf('%s,%s', Role::ADMIN, Role::TEACHER));
+            Route::post('/invites', [InviteController::class, 'create'])->middleware('role:' . sprintf('%s,%s', Role::ADMIN, Role::TEACHER));
         });
     });
 
-    // @TODO change this to /schools/{schoolId}/invites
-    Route::post('/invites', [InviteController::class, 'create'])->middleware('role:' . sprintf('%s,%s', Role::ADMIN, Role::TEACHER));
-
     Route::prefix('profiles')->group(function () {
         Route::get('/', [ProfileController::class, 'get']);
+        // @TODO this should/will be removed soon
         Route::post('/', [ProfileController::class, 'create']);
         Route::put('/', [ProfileController::class, 'update']);
     });

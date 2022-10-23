@@ -4,10 +4,6 @@ namespace App\Providers;
 
 use Illuminate\Auth\Notifications\ResetPassword;
 use Illuminate\Foundation\Support\Providers\AuthServiceProvider as ServiceProvider;
-use Illuminate\Support\Facades\Gate;
-use App\Models\User;
-use App\Models\School;
-use App\Models\Role;
 
 
 class AuthServiceProvider extends ServiceProvider
@@ -18,8 +14,8 @@ class AuthServiceProvider extends ServiceProvider
      * @var array
      */
     protected $policies = [
-        // 'App\Models\Model' => 'App\Policies\ModelPolicy',
-
+        'App\Models\User' => 'App\Policies\AccountPolicy',
+        'App\Models\Profile' => 'App\Policies\ProfilePolicy',
     ];
 
     /**
@@ -35,9 +31,5 @@ class AuthServiceProvider extends ServiceProvider
             return config('app.frontend_url')."/password-reset/$token?email={$notifiable->getEmailForPasswordReset()}";
         });
 
-
-        /* Gate::define('school', function (User $user, School $school) {
-            return $user->schools()->where('school_id', $school->id)->exists();
-        }); */
     }
 }

@@ -20,7 +20,7 @@ class Role
         // Internal admin has full access.
         array_push($roles, RoleModel::INTERNAL_ADMIN);
 
-        $hasValidRole = $request->user()->roles()->whereIn('id', $roles)->exists();
+        $hasValidRole = $request->user()->hasRoles($roles);
 
         abort_if(!$hasValidRole, 403, 'Invalid user role');
 
