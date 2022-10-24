@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use App\Models\Role;
 use App\Models\User;
+use App\Models\School;
 use Illuminate\Validation\Rule;
 use Illuminate\Http\JsonResponse;
 
@@ -23,13 +24,14 @@ class RoleController extends Controller
      * @param User $user
      * @return JsonResponse
      */
-    public function update(Request $request, User $user) :JsonResponse
+    public function update(School $school, User $user, Request $request) :JsonResponse
     {
         $request->validate([
-            'role' => [ 'required', 'integer', Rule::in([Role::ADMIN, Role::TEACHER])],
+            'roles' => 'required|array',
+            'roles.*' => [ 'required', 'integer', Rule::in([Role::ADMIN, Role::TEACHER])],
         ]);
 
-        $user->roles()->sync($request->role);
+        $user->roles()->sync($request->roles);
 
         return $this->ok(204);
     }
