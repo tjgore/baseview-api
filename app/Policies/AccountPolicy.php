@@ -48,7 +48,21 @@ class AccountPolicy extends BasePolicy
      */
     public function view(User $user, User $userAccount)
     {
-        $requiredPermission = sprintf('view-account:%s',  $userAccount->roles()->pluck('name')->implode(','));
+        $requiredPermission = sprintf('view-account:%s',  $userAccount->roleNames()->implode(','));
+
+        return PermissionService::create($user->roleIds())
+            ->accountsPermission($requiredPermission);
+    }
+
+    /**
+     * Determine if user can delete a user account
+     *
+     * @param User $user
+     * @return boolean
+     */
+    public function delete(User $user, User $userAccount)
+    {
+        $requiredPermission = sprintf('delete-account:%s',  $userAccount->roleNames()->implode(','));
 
         return PermissionService::create($user->roleIds())
             ->accountsPermission($requiredPermission);

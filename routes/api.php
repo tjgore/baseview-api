@@ -40,9 +40,10 @@ Route::middleware(['auth:sanctum'])->group(function () {
             Route::get('/accounts', [AccountController::class, 'getAll'])->middleware('can:viewAll,App\Models\User');
             Route::post('/accounts', [AccountController::class, 'create'])->middleware('can:create,App\Models\User');
             Route::get('/accounts/{user}', [AccountController::class, 'find'])->middleware('can:view,user');
-            Route::put('/profiles/{profile}', [ProfileController::class, 'updateUserProfile'])->middleware('can:update,profile,school');;
-
+            Route::delete('/accounts/{user}', [AccountController::class, 'delete'])->middleware('can:delete,user');
             Route::put('/accounts/{user}/role', [RoleController::class, 'update'])->middleware('role:' . sprintf('%s,%s', Role::ADMIN, Role::TEACHER));
+
+            Route::put('/profiles/{profile}', [ProfileController::class, 'updateUserProfile'])->middleware('can:update,profile,school');
 
             Route::get('/overview/count', [OverviewController::class, 'getCount'])->middleware('role:' . sprintf('%s,%s', Role::ADMIN, Role::TEACHER));
             Route::post('/invites', [InviteController::class, 'create'])->middleware('role:' . sprintf('%s,%s', Role::ADMIN, Role::TEACHER));

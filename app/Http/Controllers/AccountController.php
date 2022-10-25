@@ -112,4 +112,17 @@ class AccountController extends Controller
 
         return response()->json(app(ProfileService::class)->format($account));
     }
+
+    /**
+     * Delete account by id
+     *
+     * @param User $user
+     * @return void
+     */
+    public function delete(School $school, User $user)
+    {
+        $user->delete();
+
+        return $this->ok();
+    }
 }

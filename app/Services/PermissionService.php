@@ -13,7 +13,8 @@ class PermissionService {
         'accounts' => [
             'accounts:[role=teacher&limit=all,role=student&limit=all,role=admin&limit=all]',
             'view-account:[admin,student,teacher]',
-            'create-account'
+            'create-account',
+            'delete-account:[student,teacher]'
         ],
         'profiles' => [
             'update-profile:[admin,teacher,student]',
@@ -30,7 +31,8 @@ class PermissionService {
         'accounts' => [
             'accounts:[role=teacher&limit=all,role=student&limit=all,role=student&limit=my,role=admin&limit=all]',
             'view-account:[admin,teacher,student]',
-            'create-account'
+            'create-account',
+            'delete-account:[student]'
         ],
         'profiles' => [
             'update-profile:[student]'

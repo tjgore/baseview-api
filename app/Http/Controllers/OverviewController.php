@@ -14,8 +14,10 @@ class OverviewController extends Controller
         $accountsTotal = \DB::table('schools')
         ->where('schools.id', $school->id)
         ->join('school_user', 'school_user.school_id', 'schools.id')
+        ->join('users', 'users.id', 'school_user.user_id')
         ->join('role_user', 'school_user.user_id', 'role_user.user_id')
         ->join('roles', 'roles.id', 'role_user.role_id')
+        ->whereNull('users.deleted_at')
         ->selectRaw('roles.nice_name, roles.id, COUNT(school_user.user_id) as count')
         ->groupBy(['roles.nice_name', 'roles.id'])
         ->get();
