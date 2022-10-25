@@ -61,6 +61,11 @@ class User extends Authenticatable
         return $this->roles()->pluck('id');
     }
 
+    public function roleNames(): Collection
+    {
+        return $this->roles()->pluck('name');
+    }
+
     public function schools()
     {
         return $this->belongsToMany(School::class);
@@ -92,6 +97,20 @@ class User extends Authenticatable
     public function isInternalAdmin()
     {
         return $this->hasRoles([Role::INTERNAL_ADMIN]);
+    }
+
+    /**
+     * Add user to a school with a role
+     *
+     * @param integer $schoolId
+     * @param integer $roleId
+     * @return User
+     */
+    public function addToSchool(int $schoolId, int $roleId) :User
+    {
+        $this->roles()->attach($roleId);
+        $this->schools()->attach($schoolId);
+        return $this;
     }
 
 }

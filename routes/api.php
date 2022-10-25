@@ -21,7 +21,8 @@ use App\Models\Role;
 |
 */
 
-Route::get('/invites/{token}', [InviteController::class, 'findByToken']);
+Route::get('/invites/{token}', [InviteController::class, 'find']);
+Route::post('/invites/{token}', [InviteController::class, 'createAccount']);
 
 Route::middleware(['auth:sanctum'])->group(function () {
     Route::get('/user', [UserController::class, 'find']);
@@ -29,15 +30,15 @@ Route::middleware(['auth:sanctum'])->group(function () {
 
     Route::prefix('schools')->group(function () {
         Route::get('/', [SchoolController::class, 'all']);
-        Route::post('/create', [SchoolController::class, 'create'])->middleware('role:' . Role::ADMIN);
+        Route::post('/create', [SchoolController::class, 'create'])->middleware('can:create,App\Models\School');
 
         Route::group(['prefix' => '{school}', 'middleware' => 'attends.school'], function () {
-            Route::get('/', [SchoolController::class, 'find'])->middleware('role:' . implode(',', Role::SCHOOL_ROLES));
-            Route::delete('/delete', [SchoolController::class, 'delete'])->middleware('role:' . Role::ADMIN);
-            Route::put('/edit', [SchoolController::class, 'update'])->middleware('role:' . Role::ADMIN);
+            Route::get('/', [SchoolController::class, 'find'])->middleware('can:view,school');
+            Route::delete('/delete', [SchoolController::class, 'delete'])->middleware('can:delete,school');
+            Route::put('/edit', [SchoolController::class, 'update'])->middleware('can:update,school');
 
-            Route::get('/accounts', [AccountController::class, 'getAll'])->middleware('role:' . implode(',', Role::SCHOOL_ROLES));
-            Route::post('/accounts', [AccountController::class, 'create'])->middleware('role:' . sprintf('%s,%s', Role::ADMIN, Role::TEACHER));
+            Route::get('/accounts', [AccountController::class, 'getAll'])->middleware('can:viewAll,App\Models\User');
+            Route::post('/accounts', [AccountController::class, 'create'])->middleware('can:create,App\Models\User');
             Route::get('/accounts/{user}', [AccountController::class, 'find'])->middleware('can:view,user');
             Route::put('/profiles/{profile}', [ProfileController::class, 'updateUserProfile'])->middleware('can:update,profile,school');;
 
@@ -45,13 +46,13 @@ Route::middleware(['auth:sanctum'])->group(function () {
 
             Route::get('/overview/count', [OverviewController::class, 'getCount'])->middleware('role:' . sprintf('%s,%s', Role::ADMIN, Role::TEACHER));
             Route::post('/invites', [InviteController::class, 'create'])->middleware('role:' . sprintf('%s,%s', Role::ADMIN, Role::TEACHER));
+            
         });
     });
 
+    // Users own profile, will not affect other profiles
     Route::prefix('profiles')->group(function () {
         Route::get('/', [ProfileController::class, 'get']);
-        // @TODO this should/will be removed soon
-        Route::post('/', [ProfileController::class, 'create']);
         Route::put('/', [ProfileController::class, 'update']);
     });
 

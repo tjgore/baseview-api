@@ -31,10 +31,10 @@ class UserInvited extends Mailable implements ShouldQueue
      */
     public function build()
     {
-        $inviteLink = sprintf("%s/%s%s", 
+        $inviteLink = sprintf("%s/%s/%s", 
             config('app.frontend_url'), 
-            'invite?token=',
-            $this->invite->token
+            'invite',
+            $this->invite->token,
         );
                 
         return $this

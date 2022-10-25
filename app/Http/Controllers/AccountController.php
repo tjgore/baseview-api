@@ -5,7 +5,6 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use App\Models\Profile;
 use App\Services\ProfileService;
-use Illuminate\Support\Facades\Gate;
 use App\Models\School;
 use App\Models\Role;
 use App\Models\User;
@@ -32,13 +31,10 @@ class AccountController extends Controller
         ]);
         $search = $request->search;
 
-        Gate::authorize('viewAll', User::class);
-
         $accounts = $school->users()
             ->join('role_user', 'users.id', 'role_user.user_id')
             ->join('roles', 'role_user.role_id', 'roles.id')
             ->join('profiles', 'users.id', 'profiles.user_id')
-            ->where('users.id', '!=', $request->user()->id)
             ->whereNull('users.deleted_at')
             ->where('school_user.school_id', $school->id)
             ->where('roles.name', $request->role)
@@ -78,7 +74,8 @@ class AccountController extends Controller
             'address' => 'string|required',
             'mobile' => 'string|nullable',
             'job_title' => 'string|nullable',
-            'role' => [ 'required', 'integer', Rule::in(Role::SCHOOL_ROLES)],
+            'roles' => 'required|array',
+            'roles.*' => [ 'required', 'integer', Rule::in(Role::SCHOOL_ROLES)],
         ]);
 
         $user = User::create([
@@ -91,7 +88,7 @@ class AccountController extends Controller
             'general' => app(ProfileService::class)->setGeneral($validated),
         ]);
 
-        $user->roles()->attach($request->role);
+        $user->roles()->attach($request->roles);
         $user->schools()->attach($school->id);
 
         app(InviteService::class)->createInvite([

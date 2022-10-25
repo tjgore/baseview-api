@@ -9,7 +9,6 @@ use App\Models\Profile;
 use App\Models\User;
 use App\Models\School;
 use Illuminate\Http\JsonResponse;
-use Illuminate\Support\Facades\Gate;
 
 class ProfileController extends Controller
 {
@@ -23,33 +22,6 @@ class ProfileController extends Controller
         $userProfile = User::with(['profile', 'roles'])->where('id', request()->user()->id)->first();
 
         return response()->json($userProfile);    
-    }
-
-    /**
-     * Create a new profile. TODO to be merged with create user
-     *
-     * @param Request $request
-     * @return JsonResponse
-     */
-    public function create(Request $request): JsonResponse
-    {
-        $validated = $request->validate([
-            'preferred_name' => 'string|required',
-            'gender' => ['required', 'string', Rule::in(Profile::GENDER)],
-            'dob' => 'required|date_format:Y-m-d',
-            'address' => 'string|required',
-            'mobile' => 'string|nullable',
-            'job_title' => 'string|nullable',
-        ]);
-
-        $profile = new Profile;
-
-        $profile->user_id = $request->user()->id;
-        $profile->general = app(ProfileService::class)->setGeneral($validated);
-
-        $profile->save();
-
-        return $this->ok(204);
     }
 
     /**

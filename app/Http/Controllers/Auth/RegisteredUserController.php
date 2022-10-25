@@ -8,12 +8,11 @@ use Illuminate\Auth\Events\Registered;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
-use App\Models\Invite;
 
 
 class RegisteredUserController extends Controller
 {
-    /**
+    /** THIS ISN'T USED!!!! Default from laravel installation
      * Handle an incoming registration request.
      *
      * @param  \Illuminate\Http\Request  $request
@@ -27,9 +26,7 @@ class RegisteredUserController extends Controller
             'first_name' => ['required', 'string', 'max:191'],
             'last_name' => ['required', 'string', 'max:191'],
             'email' => ['required', 'string', 'email', 'max:191', 'unique:users'],
-            'password' => 'required|alpha_num|min:8|confirmed',
-            // 'password' => ['required', 'confirmed', Rules\Password::defaults()],
-            'invite_id' => 'nullable|integer|exists:invites,id',
+            'password' => ['required', 'confirmed', Rules\Password::defaults()],
         ]);
 
         $user = User::create([
@@ -39,37 +36,10 @@ class RegisteredUserController extends Controller
             'password' => Hash::make($request->password),
         ]);
 
-        // A profile is always created with the user even if it is empty. Maybe an event createProfile 
-        // @TODO this could be an event, rename to handleInvitation
-        $this->addUserToSchool($request->invite_id, $user);
-
-        // @TODO add an event to add the profile if an invite_id is provided
-
         event(new Registered($user));
 
         Auth::login($user);
 
         return response()->noContent();
-    }
-
-    /**
-     * Add User to a school
-     *
-     * @param integer $inviteId
-     * @param User $user
-     * @return void
-     */
-    private function addUserToSchool(int $inviteId, User $user)
-    {
-        if (!$inviteId) {
-            return;  
-        }
-
-        $invite = Invite::where('id', $inviteId)->where('accepted', false)->first();
-        $user->roles()->attach($invite->role_id);
-        $user->schools()->attach($invite->school_id);
-
-        $invite->accepted = true;
-        $invite->save();
     }
 }

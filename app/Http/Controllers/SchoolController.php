@@ -4,21 +4,40 @@ namespace App\Http\Controllers;
 
 use App\Http\Requests\SchoolRequest;
 use App\Models\School;
+use Illuminate\Http\JsonResponse;
 
 
 class SchoolController extends Controller
 {
-    public function all()
+
+    /**
+     * Get all the school the auth user belongs to.
+     *
+     * @return JsonResponse
+     */
+    public function all() :JsonResponse
     {
         return response()->json(request()->user()->schools);
     }
 
-    public function find(School $school)
+    /**
+     * Find school by id
+     *
+     * @param School $school
+     * @return JsonResponse
+     */
+    public function find(School $school) :JsonResponse
     {
         return response()->json($school);
     }
 
-    public function create(SchoolRequest $request)
+    /**
+     * Create a new school
+     *
+     * @param SchoolRequest $request
+     * @return JsonResponse
+     */
+    public function create(SchoolRequest $request) :JsonResponse
     {           
         $school = new School;
         $user = $request->user();
@@ -30,14 +49,28 @@ class SchoolController extends Controller
         return $this->ok(201);
     }
 
-    public function update(School $school, SchoolRequest $request)
+    /**
+     * Update a school
+     *
+     * @param School $school
+     * @param SchoolRequest $request
+     * @return JsonResponse
+     */
+    public function update(School $school, SchoolRequest $request) :JsonResponse
     {
         $this->setSchool($school, $request);
 
         return $this->ok();
     }
 
-    protected function setSchool(School $school, SchoolRequest $request)
+    /**
+     * Set school data and save
+     *
+     * @param School $school
+     * @param SchoolRequest $request
+     * @return School
+     */
+    protected function setSchool(School $school, SchoolRequest $request) :School
     {
         $school->name = $request->name;
         $school->address = $request->address;
@@ -54,9 +87,15 @@ class SchoolController extends Controller
         return $school;
     }
 
-    public function delete(School $school)
+    /**
+     * Delete school by id
+     *
+     * @param School $school
+     * @return JsonResponse
+     */
+    public function delete(School $school) :JsonResponse
     {
         $school->delete();
-        $this->ok();
+        return $this->ok();
     }
 }

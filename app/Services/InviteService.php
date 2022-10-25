@@ -24,7 +24,7 @@ class InviteService {
         $invite->last_name = $inviteData['last_name'];
         $invite->email = $inviteData['email'];
         $invite->school_id = $inviteData['school_id'];
-        $invite->role_id = $inviteData['role'];
+        $invite->role_id = $inviteData['role'] ?? $inviteData['roles'][0]; // @TODO this will eventually always be an array, right now we accept integers too
         $invite->token = Str::uuid();
         $invite->created_by_id = $inviteData['user_id'];
         $invite->expires_at = now()->addDay();
